@@ -1,0 +1,3 @@
+#!/home/cypher/fprime/bin/python3
+from Cheetah.CheetahWrapper import _cheetah
+_cheetah()

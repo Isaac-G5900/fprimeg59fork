@@ -363,6 +363,47 @@ void FileManagerTester ::fileSizeFail() {
     this->assertFailure(FileManager::OPCODE_FILESIZE);
 }
 
+void FileManagerTester ::listDirectorySucceed() {
+#if defined TGT_OS_TYPE_LINUX || TGT_OS_TYPE_DARWIN
+    // Remove test_dir and create it with some files
+    this->system("rm -rf test_dir");
+    this->system("mkdir test_dir");
+    this->system("touch test_dir/file1.txt");
+    this->system("touch test_dir/file2.txt");
+    this->system("touch test_dir/file3.dat");
+#else
+    FAIL();  // Commands not implemented for this OS
+#endif
+
+    // List the directory
+    this->listDirectory("test_dir");
+
+    // Assert success - 5 events: Starting + 3 DirectoryListing + Success
+    this->assertSuccess(FileManager::OPCODE_LISTDIRECTORY, 5);
+
+#if defined TGT_OS_TYPE_LINUX || TGT_OS_TYPE_DARWIN
+    // Clean up
+    this->system("rm -rf test_dir");
+#else
+    FAIL();  // Commands not implemented for this OS
+#endif
+}
+
+void FileManagerTester ::listDirectoryFail() {
+#if defined TGT_OS_TYPE_LINUX || TGT_OS_TYPE_DARWIN
+    // Remove test_dir to ensure it doesn't exist
+    this->system("rm -rf test_dir");
+#else
+    FAIL();  // Commands not implemented for this OS
+#endif
+
+    // Attempt to list nonexistent directory
+    this->listDirectory("test_dir");
+
+    // Assert failure
+    this->assertFailure(FileManager::OPCODE_LISTDIRECTORY);
+}
+
 // ----------------------------------------------------------------------
 // Helper methods
 // ----------------------------------------------------------------------
@@ -436,6 +477,12 @@ void FileManagerTester ::appendFile(const char* const source, const char* const 
     Fw::CmdStringArg cmdSource(source);
     Fw::CmdStringArg cmdTarget(target);
     this->sendCmd_AppendFile(INSTANCE, CMD_SEQ, cmdSource, cmdTarget);
+    this->component.doDispatch();
+}
+
+void FileManagerTester ::listDirectory(const char* const dirName) {
+    Fw::CmdStringArg cmdStringDir(dirName);
+    this->sendCmd_ListDirectory(INSTANCE, CMD_SEQ, cmdStringDir);
     this->component.doDispatch();
 }
 
