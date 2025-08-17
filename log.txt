@@ -1,4 +1,0 @@
-rm: cannot remove 'test_file': No such file or directory
-rm: cannot remove 'test_file': No such file or directory
-rm: cannot remove 'test_file': No such file or directory
-rm: cannot remove 'test_file': No such file or directory
