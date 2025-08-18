@@ -104,6 +104,10 @@ class FileManagerTester : public FileManagerGTestBase {
     //! List directory (fail)
     //!
     void listDirectoryFail();
+    
+    //! List directory with subdirectories (enhanced listing)
+    //!
+    void listDirectoryWithSubdirs();
 
   private:
     // ----------------------------------------------------------------------
